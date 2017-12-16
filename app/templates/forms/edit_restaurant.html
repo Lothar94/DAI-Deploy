@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+{% block body %}
+  <script>
+  $("document").ready(function(){
+    $(".row").click(function(){
+      $("#restaurant_id").attr("value", $(this).children(".restaurant_id").text());
+    });
+
+    $(".row").hover(function(){
+      $(this).css('background-color', '#e8e9eb');
+    }, function(){
+      $(this).css('background-color', 'white');
+    });
+  });
+  </script>
+  <section class="default_section">
+    <h1>Modifica tu restaurante</h1>
+    <div class="pure-g side-text">
+      <div class="pure-u-1-2">
+        <h2>Selecciona el Restaurante</h2>
+        <table class="pure-table">
+          <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Barrio</th>
+            <th>Dirección</th>
+          </tr>
+          {% for i, restaurant in restaurants %}
+            <tr class="row">
+              <td class="restaurant_id">{{ restaurant.restaurant_id }}</td>
+              <td class="name">{{ restaurant.name }}</td>
+              <td class="cuisine">{{ restaurant.cuisine }}</td>
+              <td class="borough">{{ restaurant.borough }}</td>
+              <td class="address">{{ restaurant.address.street }}</td>
+            </tr>
+          {% endfor %}
+        </table>
+        <div class="pagination">
+          <span class="step-links">
+              {% if restaurants.has_previous %}
+                  <a class="pure-button pure-button-primary" href="?page={{ restaurants.previous_page_number }}">previous</a>
+              {% endif %}
+
+              <span class="current">
+                  Page {{ restaurants.number }} of {{ restaurants.paginator.num_pages }}.
+              </span>
+
+              {% if restaurants.has_next %}
+                  <a class="pure-button pure-button-primary" href="?page={{ restaurants.next_page_number }}">next</a>
+              {% endif %}
+          </span>
+        </div>
+      </div>
+      <div class="pure-u-1-2">
+        <h2>Datos</h2>
+        <form class="pure-form" action="{% url 'edit_restaurant' %}" method="post">
+          <fieldset>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" class="pure-button pure-button-primary" value="Enviar" />
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </section>
+{% endblock %}
